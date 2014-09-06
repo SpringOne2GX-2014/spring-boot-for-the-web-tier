@@ -1,6 +1,7 @@
 package springone;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -16,10 +17,11 @@ public class ExampleWebController {
 	private MessageSource source;
 
 	@RequestMapping("/hello/{name}")
-	public ModelAndView hello(@PathVariable String name) {
+	public ModelAndView hello(@PathVariable String name, Locale locale) {
 		return new ModelAndView("hello")
 				.addObject("name", name)
-				.addObject("items", Arrays.asList("Using Groovy", "And Groovy Templates", "Really Rocks!"));
+				.addObject("items", Arrays.asList("Using Groovy", "And Groovy Templates", "Really Rocks!"))
+				.addObject("messages", new Messages(source, locale));
 	}
 
 }

@@ -8,7 +8,7 @@ html {
 		link(rel: 'stylesheet', href: '/wro.css')
 	}
 	body {
-		h1("Hello $name")
+		h1(messages.get('hello') + " $name")
 		div(class: 'container') {
 			div(class: 'os-phrases') {
 				items.each {
