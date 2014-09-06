@@ -1,0 +1,22 @@
+@dark-green: #003300;
+@light-green: #336600;
+
+.gradient (@origin: left, @start: #ffffff, @stop: #000000) {
+	background-color: @start;
+	background-image: -webkit-linear-gradient(@origin, @start, @stop);
+	background-image: -moz-linear-gradient(@origin, @start, @stop);
+	background-image: -o-linear-gradient(@origin, @start, @stop);
+	background-image: -ms-linear-gradient(@origin, @start, @stop);
+	background-image: linear-gradient(@origin, @start, @stop);
+}
+
+H1 {
+	.gradient(left, @dark-green, @light-green);
+	text-shadow: #000000 2px 2px;
+	margin: 0;
+	padding: 10px;
+	font-family: 'Dosis', 'Lato', sans-serif;
+	font-size: 40px;
+	font-weight: 800;
+
+}
