@@ -1,0 +1,118 @@
+== Spring Boot for the Web Tier
+
+=== Introduction
+This is code from the ``Spring Boot for the Web Tier'' presentation given at SpringOne
+2014. It demonstrates a number of Spring Boot features that are particularly relevant
+to web developers.
+
+Use `git log` to see how the application was constructed and `git reset --hard` if you
+want to go back to a particular point in time.
+
+
+
+=== Credits
+This demonstration uses CSS and Javascript from the
+http://tympanus.net/codrops/2013/04/30/text-opening-sequence-with-css-animations/[``Text Opening Sequence with CSS
+Animations''] article by https://twitter.com/crnacura[Mary Lou]. It also uses Jars from
+the http://webjars.org[webjars] project.
+
+
+
+=== Building and running the code
+This project can be build using Apache Maven from the root directory:
+
+[source,indent=0]
+----
+	$ mvn clean package
+----
+
+Once build code can be run using `java -jar`:
+
+[source,indent=0]
+----
+	$ java -jar target/spring-boot-for-the-web-tier.jar
+----
+
+There are a couple of Firefox plugins that also help:
+* https://addons.mozilla.org/en-US/firefox/addon/empty-cache-button/
+* https://github.com/nohamelin/simple-locale-switcher
+
+In addition, if you want to run the Apache HTTP SSL demo you will need docker (see
+instructions below).
+
+
+=== Demos
+
+==== Static Content
+Static content is served from `src/main/resources/public`. You can see an `index.html`
+file which is automatically mapped to `http://localhost:8080/`. You can also see how
+a custom `src/main/resources/favicon.ico` file can be used.
+
+Additional this project demonstrates how jQuery can be loaded from a ``webjar'' and how
+wro4j can be used to process a `less` css file.
+
+
+==== Dynamic Content
+The `/hello/{name}` endpoint demonstrates how dynamic content can be created using Groovy
+templates. It also shows internationalization using Spring's `MessageSource` interface.
+
+The `/convert` endpoint shows how a custom `HttpMessageConverter` can be used. Notice that
+`ExampleRestController` returns a list, which is converted by `ListHttpMessageConverter`.
+If you comment out the `@Component` annotation from `ListHttpMessageConverter` you'll
+see a standard JSON response instead.
+
+
+==== HTTPD Proxy
+The `/whoami` endpoint can be used to show how Apache HTTPD can be used as an SSL
+terminating proxy in front of a Spring Boot application. For convenience a dockerfile
+is provided to create a configured HTTPD installation.
+
+To build the docker image:
+
+[source,indent=0]
+----
+	$ docker build -t springone/httpd-proxy httpd-docker
+----
+
+When running image you need to ensure that a `TOMCAT_HOST` environment variable has been
+set to the IP address of your local machine. The following commands should work on
+most machines:
+
+[source,indent=0]
+----
+	$ export TOMCAT_HOST=$(ifconfig | sed -En '/docker/,+2d;s/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1)
+	$ docker run -i -d -p 8081:80 -p 8082:443 -e TOMCAT_HOST springone/httpd-proxy
+----
+
+If you have problems check that `TOMCAT_HOST` has the correct IP address.
+
+To test the application you can first `curl` directly to your running application:
+
+[source,indent=0]
+----
+	$ curl http://127.0.0.1:8080/whoami
+	$ curl -k https://127.0.0.1:8080/whoami
+----
+
+The first command should return `http://127.0.0.1:8080`, the second should fail because
+SSL hasn't been configured.
+
+To test via the HTTPD proxy:
+
+[source,indent=0]
+----
+	$ curl http://127.0.0.1:8081/whoami
+	$ curl -k http://127.0.0.1:8082/whoami
+----
+
+or if you're on a mac using `boot2docker`:
+
+[source,indent=0]
+----
+	$ curl http://$(boot2docker ip 2>/dev/null):8081/whoami
+	$ curl -k https://$(boot2docker ip 2>/dev/null):8082/whoami
+----
+
+This time you should see a different IP address and the second command should report a
+`https://` address.
+
