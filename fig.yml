@@ -1,0 +1,7 @@
+httpd:
+  build: httpd-docker
+  ports:
+    - "8081:80"
+    - "8082:443"
+  environment:
+    - TOMCAT_HOST
