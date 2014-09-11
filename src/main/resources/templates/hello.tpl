@@ -8,7 +8,7 @@ html {
 		link(rel: 'stylesheet', href: '/wro.css')
 	}
 	body {
-		h1(messages.get('hello') + " $name")
+		h1(spring.getMessage('hello','Hello') + " $name")
 		div(class: 'container') {
 			div(class: 'os-phrases') {
 				items.each {

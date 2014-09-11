@@ -21,16 +21,16 @@ public class ExampleWebController {
 
 	@RequestMapping("/hello/{name}")
 	public ModelAndView hello(@PathVariable String name, Locale locale) {
-		return new ModelAndView("hello")
-				.addObject("name", name)
-				.addObject("items", Arrays.asList("Using Groovy", "And Groovy Templates", "Really Rocks!"))
-				.addObject("messages", new Messages(source, locale));
+		return new ModelAndView("hello").addObject("name", name).addObject(
+				"items",
+				Arrays.asList("Using Groovy", "And Groovy Templates",
+						"Really Rocks!"));
 	}
 
 	@RequestMapping("/whoami")
 	@ResponseBody
 	public String ip(HttpServletRequest request) {
-		return request.getScheme() + "://" + request.getRemoteAddr()
-				+ ":" + request.getServerPort() + "\n";
+		return request.getScheme() + "://" + request.getRemoteAddr() + ":"
+				+ request.getServerPort() + "\n";
 	}
 }
